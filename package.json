@@ -1,0 +1,37 @@
+{
+  "name": "sandox1",
+  "version": "0.0.1",
+  "description": "This project can be use as a starting point for developing your new Stellar Soroban Test Network SubQuery project",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "subql build",
+    "codegen": "subql codegen",
+    "start:docker": "docker-compose pull && docker-compose up --remove-orphans",
+    "dev": "subql codegen && subql build && docker-compose pull && docker-compose up --remove-orphans",
+    "prepack": "rm -rf dist && npm run build",
+    "test": "subql build && subql-node-stellar test"
+  },
+  "homepage": "https://github.com/subquery/stellar-subql-starter",
+  "repository": "github:subquery/stellar-subql-starter",
+  "files": [
+    "dist",
+    "schema.graphql",
+    "project.yaml"
+  ],
+  "author": "SubQuery Team",
+  "license": "MIT",
+  "dependencies": {
+    "@subql/common": "latest",
+    "@subql/types-stellar": "latest",
+    "@subql/validator": "latest",
+    "pg-hstore": "^2.3.4"
+  },
+  "devDependencies": {
+    "@subql/cli": "^3.6.2-11",
+    "@subql/testing": "2.0.2",
+    "@subql/types": "3.1.1",
+    "ethers": "^5.7.2",
+    "@types/node": "^16.11.19",
+    "typescript": "4.5.5"
+  }
+}
