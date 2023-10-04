@@ -7,10 +7,15 @@
 ## Start
 
 
-Must have node version at least 18
+Must have node version at least 18:
+```
+nvm use 18.15.0
+```
 
-Put `.env` file at root of the project.
-
+Put `.env` file at root of the project:
+```
+touch .env
+```
 
 Install dependencies:
 ```
