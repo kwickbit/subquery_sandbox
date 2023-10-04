@@ -1,0 +1,48 @@
+{
+  account(id: "gdqsqcgxzgprf23mmttdvfiwhyakaj5f53r3r23ucxsxfidnjnhqvbgx") {
+    id
+    firstSeenLedger
+    sentTransfers {
+      totalCount
+      nodes {
+        id
+        date
+        ledger
+        toId
+        fromId
+        value
+      }
+    }
+    receivedTransfers {
+      totalCount
+      nodes {
+        id
+        date
+        ledger
+        toId
+        fromId
+        value
+      }
+    }
+    sentPayments {
+        totalCount
+        nodes {
+            id
+            txHash
+            toId
+            fromId
+            amount
+        }
+    }
+    receivedPayments {
+        totalCount
+        nodes {
+            id
+            txHash
+            toId
+            fromId
+            amount
+        }
+    }
+}
+}

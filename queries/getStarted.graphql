@@ -1,0 +1,30 @@
+{
+    query {
+      transfers(first: 5, orderBy: VALUE_DESC) {
+        totalCount
+        nodes {
+          id
+          date
+          ledger
+          toId
+          fromId
+          value
+        }
+      }
+      accounts(first: 5, orderBy: SENT_TRANSFERS_COUNT_DESC) {
+        nodes {
+          id
+          sentTransfers(first: 5, orderBy: LEDGER_DESC) {
+            totalCount
+            nodes {
+              id
+              toId
+              value
+            }
+          }
+          firstSeenLedger
+          lastSeenLedger
+        }
+      }
+    }
+  }
