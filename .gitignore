@@ -24,6 +24,9 @@ package-lock.json
 .data
 data
 
+# environment file
+.env
+
 # Package files
 *.jar
 
