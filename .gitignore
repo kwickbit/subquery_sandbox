@@ -27,6 +27,9 @@ data
 # environment file
 .env
 
+# deploy files
+.project-cid
+
 # Package files
 *.jar
 

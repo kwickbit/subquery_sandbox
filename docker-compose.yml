@@ -8,6 +8,8 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
       - ./init-scripts/postgres/:/docker-entrypoint-initdb.d/
+    networks:
+      - sandbox-network
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
@@ -24,6 +26,8 @@ services:
       "postgres":
         condition: service_healthy
     restart: always
+    networks:
+      - sandbox-network
     environment:
       DB_USER: postgres
       DB_PASS: postgres
@@ -54,6 +58,9 @@ services:
       "subquery-node":
         condition: service_healthy
     restart: always
+    networks:
+      - graphql-engine-network
+      - sandbox-network
     environment:
       DB_USER: postgres
       DB_PASS: postgres
@@ -64,3 +71,10 @@ services:
       - --name=app
       - --playground
       - --indexer=http://subquery-node:3000
+
+networks:
+  graphql-engine-network:
+    external:
+      name: compliance_kwickbit_paltalabs_network
+  sandbox-network:
+    driver: bridge
