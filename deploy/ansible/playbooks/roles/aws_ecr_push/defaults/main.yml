@@ -1,0 +1,13 @@
+project_root_path:
+aws_access_key:
+aws_secret_key:
+aws_region:
+role_arn:
+ecr_repository_uri:
+ecr_image_tag:
+ecr_login_url:
+ecr_login_username:
+docker_image_name:
+docker_context_path:
+docker_file_relative_path:
+build_type:

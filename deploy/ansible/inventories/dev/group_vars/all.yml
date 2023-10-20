@@ -1,0 +1,21 @@
+account_id: "{{ lookup('env','AWS_ACCOUNT_ID') | default(vault_aws_account_id_dev, true) }}"
+role_arn: "arn:aws:iam::{{ account_id }}:role/push-docker-image-ecr-subquery-dev-role"
+aws_region: "eu-central-1"
+aws_access_key: "{{ lookup('env','AWS_ACCESS_KEY') | default(vault_aws_access_key_dev, true) }}"
+aws_secret_key: "{{ lookup('env','AWS_SECRET_KEY') | default(vault_aws_secret_key_dev, true) }}"
+project_env: "dev"
+
+ecr_login_url: "{{ account_id }}.dkr.ecr.eu-central-1.amazonaws.com"
+ecr_login_username: "AWS"
+
+# subquery node
+ecr_repository_uri_subquery_node: "{{ account_id }}.dkr.ecr.eu-central-1.amazonaws.com/subquery_node_dev"
+docker_image_name_subquery_node: subquery_node_dev
+docker_image_tag_subquery_node: v3.0.1
+ecr_image_tag_subquery_node: v3.0.1
+
+# graphql engine
+ecr_repository_uri_graphql_engine: "{{ account_id }}.dkr.ecr.eu-central-1.amazonaws.com/subquery_graphql_engine_dev"
+docker_image_name_graphql_engine: onfinality/subql-query
+docker_image_tag_graphql_engine: v2.6.0
+ecr_image_tag_graphql_engine: v2.6.0

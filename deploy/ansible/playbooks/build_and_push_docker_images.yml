@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars:
+    project_root_path: "{{ (playbook_dir + '/../../..') | realpath }}"
+  roles:
+    - role: aws_ecr_push
+      vars:
+        ecr_repository_uri: "{{ ecr_repository_uri_subquery_node }}"
+        docker_image_name: "{{ docker_image_name_subquery_node }}"
+        docker_image_tag: "{{ docker_image_tag_subquery_node }}"
+        ecr_image_tag: "{{ ecr_image_tag_subquery_node }}"
+        docker_context_path: "{{ project_root_path }}"
+        docker_file_relative_path: "./deploy/ansible/resources/ecr/subquery-node/Dockerfile"
+        build_type: from_dockerfile
+    - role: aws_ecr_push
+      vars:
+        ecr_repository_uri: "{{ecr_repository_uri_graphql_engine }}"
+        docker_image_name: "{{docker_image_name_graphql_engine }}"
+        docker_image_tag: "{{docker_image_tag_graphql_engine }}"
+        ecr_image_tag: "{{ecr_image_tag_graphql_engine }}"
+        build_type: from_official

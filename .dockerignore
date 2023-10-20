@@ -1,0 +1,11 @@
+.github
+data
+init-scripts
+queries
+.dockerignore
+.gitignore
+.project-cid
+docker-compose.yml
+LICENSE
+package-lock.json
+README.md

@@ -21,7 +21,7 @@ services:
       retries: 5
 
   subquery-node:
-    image: subquerynetwork/subql-node-stellar:latest
+    image: subquerynetwork/subql-node-stellar:v3.0.1
     depends_on:
       "postgres":
         condition: service_healthy
@@ -35,13 +35,18 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
     volumes:
-      - ./:/app
+      - ./dist:/app/dist
+      - ./project.yaml:/app/project.yaml
+      - ./package.json:/app/package.json
+      - ./schema.graphql:/app/schema.graphql
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./src:/app/src
     command:
       - ${SUB_COMMAND} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/app
       - --db-schema=app
       - --workers=1 # The more the faster
-      - --batch-size=5 # The higher the faster, set low to avoid rate limit on SDF endpoint
+      - --batch-size=1 # The higher the faster, set low to avoid rate limit on SDF endpoint
     healthcheck:
       test: ["CMD", "curl", "-f", "http://subquery-node:3000/ready"]
       interval: 3s
@@ -49,7 +54,7 @@ services:
       retries: 10
 
   graphql-engine:
-    image: onfinality/subql-query:latest
+    image: onfinality/subql-query:v2.6.0
     ports:
       - 3000:3000
     depends_on:

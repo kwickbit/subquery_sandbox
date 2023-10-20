@@ -1,0 +1,55 @@
+---
+- name: Assume Role
+  community.aws.sts_assume_role:
+    role_arn: "{{ role_arn }}"
+    role_session_name: "AnsibleSession"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+  register: aws_assumed_role
+
+- name: Get ECR login password
+  command:
+    cmd: "aws ecr get-login-password --region {{ aws_region }}"
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_assumed_role.sts_creds.access_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_assumed_role.sts_creds.secret_key }}"
+    AWS_SESSION_TOKEN: "{{ aws_assumed_role.sts_creds.session_token }}"
+  no_log: true
+  register: ecr_login_password
+
+- name: Login to ECR
+  ansible.builtin.docker_login:
+    registry_url: "{{ ecr_login_url }}"
+    username: "{{ ecr_login_username }}"
+    password: "{{ ecr_login_password.stdout }}"
+
+- name: Build Docker image from Dockerfile
+  ansible.builtin.docker_image:
+    name: "{{ docker_image_name }}"
+    tag: "{{ docker_image_tag }}"
+    source: build
+    state: present
+    build:
+      path: "{{ docker_context_path }}"
+      dockerfile: "{{ docker_file_relative_path }}"
+  when: build_type == 'from_dockerfile'
+
+- name: Pull official Docker image
+  ansible.builtin.docker_image:
+    name: "{{ docker_image_name }}"
+    tag: "{{ docker_image_tag }}"
+    source: pull
+    state: present
+  when: build_type == 'from_official'
+
+- name: debug
+  debug:
+    var: docker_image_name
+
+- name: Push Docker image to ECR
+  ansible.builtin.docker_image:
+    name: "{{ docker_image_name }}"
+    tag: "{{ docker_image_tag }}"
+    push: yes
+    repository: "{{ ecr_repository_uri }}:{{ ecr_image_tag }}"
+    source: local

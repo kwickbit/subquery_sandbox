@@ -4,12 +4,12 @@
   "description": "This project can be use as a starting point for developing your new Stellar Soroban Test Network SubQuery project",
   "main": "dist/index.js",
   "scripts": {
-    "build": "subql build",
-    "codegen": "subql codegen",
+    "build": "npx subql build",
+    "codegen": "npx subql codegen",
     "start:docker": "docker-compose pull && docker-compose up --remove-orphans",
-    "dev": "subql codegen && subql build && docker-compose pull && docker-compose up --remove-orphans",
+    "dev": "npx subql codegen && subql build && docker-compose pull && docker-compose up --remove-orphans",
     "prepack": "rm -rf dist && npm run build",
-    "test": "subql build && subql-node-stellar test"
+    "test": "npx subql build && subql-node-stellar test"
   },
   "homepage": "https://github.com/subquery/stellar-subql-starter",
   "repository": "github:subquery/stellar-subql-starter",
@@ -21,13 +21,13 @@
   "author": "SubQuery Team",
   "license": "MIT",
   "dependencies": {
-    "@subql/common": "3.1.2",
+    "@subql/common": "3.1.3",
     "@subql/types-stellar": "3.0.0",
     "@subql/validator": "2.2.0",
     "pg-hstore": "2.3.4"
   },
   "devDependencies": {
-    "@subql/cli": "4.0.0",
+    "@subql/cli": "4.0.5",
     "@subql/testing": "2.0.2",
     "@subql/types": "3.1.2",
     "@types/node": "^16.11.19",
