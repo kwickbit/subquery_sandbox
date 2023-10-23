@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars:
+    project_root_path: "{{ (playbook_dir + '/../../..') | realpath }}"
+    role_arn: "{{ role_arn_push_ecs_task_definition }}"
+  roles:
+    - name: Push subquery node task definition
+      role: aws_ecs_task
+      vars:
+        task_definition_family: "subquery-node-task-family-{{ project_env }}"
+        task_definition_revision: "{{ task_definition_revision_subquery_node }}"
+        template_path: "{{ project_root_path }}/deploy/ansible/templates/ecs/task_definitions/subquery-node/tasks.json.j2"
+        container_docker_image: "{{ container_docker_image_subquery_node }}"
+        container_name: "subquery_node_{{ project_env }}"
+        aws_logs_group: "/ecs/subquery-node-task-family-{{ project_env }}"
+        command_input: "{{ docker_command_subquery_node }}"
+    - name: Push graphql engine task definition
+      role: aws_ecs_task
+      vars:
+        task_definition_family: "subquery-graphql-task-family-{{ project_env }}"
+        task_definition_revision: "{{ task_definition_revision_subquery_graphql_engine }}"
+        template_path: "{{ project_root_path }}/deploy/ansible/templates/ecs/task_definitions/graphql-engine/tasks.json.j2"
+        container_docker_image: "{{ container_docker_image_subquery_graphql_engine }}"
+        container_name: "graphql_engine_{{ project_env }}"
+        aws_logs_group: "/ecs/subquery-graphql-task-family-{{ project_env }}"
+        command_input: "{{ docker_command_subquery_graphql_engine }}"

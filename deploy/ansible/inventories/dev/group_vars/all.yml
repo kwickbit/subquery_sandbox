@@ -1,5 +1,6 @@
 account_id: "{{ lookup('env','AWS_ACCOUNT_ID') | default(vault_aws_account_id_dev, true) }}"
-role_arn: "arn:aws:iam::{{ account_id }}:role/push-docker-image-ecr-subquery-dev-role"
+role_arn_push_ecr_image: "arn:aws:iam::{{ account_id }}:role/push-docker-image-ecr-subquery-dev-role"
+role_arn_push_ecs_task_definition: "arn:aws:iam::{{ account_id }}:role/push-task-definition-ecs-subquery-dev-role"
 aws_region: "eu-central-1"
 aws_access_key: "{{ lookup('env','AWS_ACCESS_KEY') | default(vault_aws_access_key_dev, true) }}"
 aws_secret_key: "{{ lookup('env','AWS_SECRET_KEY') | default(vault_aws_secret_key_dev, true) }}"
@@ -19,3 +20,20 @@ ecr_repository_uri_graphql_engine: "{{ account_id }}.dkr.ecr.eu-central-1.amazon
 docker_image_name_graphql_engine: onfinality/subql-query
 docker_image_tag_graphql_engine: v2.6.0
 ecr_image_tag_graphql_engine: v2.6.0
+
+# ecs task subquery node
+container_docker_image_subquery_node: "{{ account_id }}.dkr.ecr.eu-central-1.amazonaws.com/subquery_node_{{ project_env }}:v3.0.1"
+task_definition_revision_subquery_node: 15
+docker_command_subquery_node:
+  - "-f=/app"
+  - "--db-schema=app"
+  - "--workers=1"
+  - "--batch-size=1"
+
+# ecs task subquery graphql engine
+container_docker_image_subquery_graphql_engine: "{{ account_id }}.dkr.ecr.eu-central-1.amazonaws.com/subquery_graphql_engine_{{ project_env }}"
+task_definition_revision_subquery_graphql_engine: 6
+docker_command_subquery_graphql_engine:
+  - "--name=app"
+  - "--playground"
+  - "--indexer=http://subquery-node:3000"

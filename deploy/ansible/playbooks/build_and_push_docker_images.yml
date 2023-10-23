@@ -4,6 +4,7 @@
   gather_facts: yes
   vars:
     project_root_path: "{{ (playbook_dir + '/../../..') | realpath }}"
+    role_arn: "{{ role_arn_push_ecr_image }}"
   roles:
     - role: aws_ecr_push
       vars:

@@ -1,0 +1,59 @@
+---
+- name: Assume Role
+  community.aws.sts_assume_role:
+    role_arn: "{{ role_arn }}"
+    role_session_name: "AnsibleSession"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+  register: aws_assumed_role
+
+- name: Load task definition from file
+  set_fact:
+    task_definition_json: "{{ lookup('template', template_path) }}"
+
+- name: Create or update ECS task definition
+  community.aws.ecs_taskdefinition:
+    aws_access_key: "{{ aws_assumed_role.sts_creds.access_key }}"
+    aws_secret_key: "{{ aws_assumed_role.sts_creds.secret_key }}"
+    aws_session_token: "{{ aws_assumed_role.sts_creds.session_token }}"
+    aws_region: "{{ aws_region }}"
+    family: "{{ task_definition_family }}"
+    revision: "{{ task_definition_revision }}"
+    state: present
+    launch_type: FARGATE
+    cpu: "1024"
+    memory: "3072"
+    containers:
+      - name: "{{ container_name }}"
+        image: "{{ container_docker_image }}"
+        cpu: 0
+        essential: true
+        portMappings:
+          - containerPort: 3000
+            hostPort: 3000
+            protocol: tcp
+        command: "{{ command_input }}"
+        environment:
+          - name: "DB_DATABASE"
+            value: "postgres"
+        secrets:
+          - name: "DB_HOST"
+            valueFrom: "arn:aws:secretsmanager:eu-central-1:{{ account_id }}:secret:{{ project_env }}/subquery/rds-96kkot::host:"
+          - name: "DB_PASS"
+            valueFrom: "arn:aws:secretsmanager:eu-central-1:{{ account_id }}:secret:{{ project_env }}/subquery/rds-96kkot::password:"
+          - name: "DB_PORT"
+            valueFrom: "arn:aws:secretsmanager:eu-central-1:{{ account_id }}:secret:{{ project_env }}/subquery/rds-96kkot::port:"
+          - name: "DB_USER"
+            valueFrom: "arn:aws:secretsmanager:eu-central-1:{{ account_id }}:secret:{{ project_env }}/subquery/rds-96kkot::username:"
+        logConfiguration:
+          logDriver: "awslogs"
+          options:
+            awslogs-create-group: "true"
+            awslogs-group: "{{ aws_logs_group }}"
+            awslogs-region: "{{ aws_region }}"
+            awslogs-stream-prefix: "ecs"
+    task_role_arn: "arn:aws:iam::{{ account_id }}:role/ecs_subquery_task_{{ project_env }}_role"
+    execution_role_arn: "arn:aws:iam::{{ account_id }}:role/ecs_subquery_task_execution_{{ project_env }}_role"
+    network_mode: "awsvpc"
+  register: task_output
+
